@@ -149,8 +149,75 @@ debug.inspect = true
 ```
 
 
-X/X/X:
-* Text
+11/27/2023:
+* How to adjust sprite size:
+```js
+kaboom({
+	// without specifying "width" and "height", kaboom will size to the container (document.body by default)
+	width: 200,
+	height: 100,
+	// "stretch" stretches the defined width and height to fullscreen
+	// stretch: true,
+	// "letterbox" makes stretching keeps aspect ratio (leaves black bars on empty spaces), have no effect without "stretch"
+	letterbox: true,
+})
+
+loadBean()
+
+add([
+	sprite("bean"),
+])
+
+onClick(() => addKaboom(mousePos()))
+```
+
+* How to add gravity:
+```js
+kaboom()
+
+// Load assets
+loadSprite("bean", "/sprites/bean.png")
+
+// Set the gravity acceleration (pixels per second)
+setGravity(1600)
+
+// Add player game object
+const player = add([
+	sprite("bean"),
+	pos(center()),
+	area(),
+	// body() component gives the ability to respond to gravity
+	body(),
+])
+
+onKeyPress("space", () => {
+	// .isGrounded() is provided by body()
+	if (player.isGrounded()) {
+		// .jump() is provided by body()
+		player.jump()
+	}
+})
+
+// .onGround() is provided by body(). It registers an event that runs whenever player hits the ground.
+player.onGround(() => {
+	debug.log("ouch")
+})
+
+// Add a platform to hold the player
+add([
+	rect(width(), 48),
+	outline(4),
+	area(),
+	pos(0, height() - 48),
+	// Give objects a body() component if you don't want other solid objects pass through
+	body({ isStatic: true }),
+])
+
+add([
+	text("Press space key", { width: width() / 2 }),
+	pos(12, 12),
+])
+```
 
 
 <!--
