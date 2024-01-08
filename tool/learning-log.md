@@ -219,6 +219,28 @@ add([
 ])
 ```
 
+12/4/2023:
+* https://www.youtube.com/watch?v=XjnvEw-iFDA (step by step tutorial about guy making an action game using kaboom.js)
+
+* How to initialize kaboom (put this in .html file):
+```html
+<script type="module">
+
+import kaboom from "https://unpkg.com/kaboom@3000.0.1/dist/kaboom.mjs";
+
+kaboom();
+
+add([
+    text("hello"),
+    pos(120, 80),
+]);
+
+</script>
+```
+
+1/8/2024:
+* Article covering the basics followed with a video on how to make Super Mario, Zelda, and Space Invaders with Kaboom.js:
+https://www.freecodecamp.org/news/how-to-build-mario-zelda-and-space-invaders-with-kaboom-js/ 
 
 <!--
 * Links you used today (websites, videos, etc)
