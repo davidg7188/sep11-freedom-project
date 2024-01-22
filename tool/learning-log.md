@@ -240,8 +240,34 @@ add([
 
 1/8/2024:
 * Article covering the basics followed with a video on how to make Super Mario, Zelda, and Space Invaders with Kaboom.js:
-https://www.freecodecamp.org/news/how-to-build-mario-zelda-and-space-invaders-with-kaboom-js/ 
+https://www.freecodecamp.org/news/how-to-build-mario-zelda-and-space-invaders-with-kaboom-js/
 
+
+1/22/24:
+* I followed the video from 1/8/24:
+```js
+kaboom()
+
+loadPedit("person", "sprites/person.pedit")
+loadPedit("ground", "sprites/ground.pedit")
+
+add([
+  sprite("person"),
+  pos(20, 5),
+  scale(9.0),
+])
+
+addLevel([
+  '        ',
+  '    @   ',
+  '        ',
+  'xxxxxxxx',
+], {
+  tileWidth: 40,
+  tileHeight: 40,
+  "x" : [sprite("ground")],
+})
+```
 <!--
 * Links you used today (websites, videos, etc)
 * Things you tried, progress you made, etc
