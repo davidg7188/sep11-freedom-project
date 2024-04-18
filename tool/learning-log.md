@@ -242,7 +242,6 @@ add([
 * Article covering the basics followed with a video on how to make Super Mario, Zelda, and Space Invaders with Kaboom.js:
 https://www.freecodecamp.org/news/how-to-build-mario-zelda-and-space-invaders-with-kaboom-js/
 
-
 1/22/24:
 * I followed the video from 1/8/24:
 ```js
@@ -268,6 +267,9 @@ addLevel([
   "x" : [sprite("ground")],
 })
 ```
+
+2/1/2024:
+
 <!--
 * Links you used today (websites, videos, etc)
 * Things you tried, progress you made, etc

@@ -1,29 +1,191 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <!-- Required meta tags -->
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<script type="module">
 
-        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
-        <link href="style.css" rel="stylesheet" type="text/css" />
-        <style>
-            /* CSS */
-            
-        </style>
-        
-        <title>Title</title>
-    </head>
-    <body>
-        <!-- HTML -->
-        
-        
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- <script src="script.js"></script> -->
-        <script>
-            // JS
-            
-            
-        </script>
-    </body>
-</html>
+import kaboom from "https://unpkg.com/kaboom@3000.0.1/dist/kaboom.mjs";
+
+kaboom({
+        width: window.innerWidth,
+        height: window.innerHeight,
+});
+
+loadSprite("kratos","sprites/kratos.png");
+loadSprite("snake","sprites/snakeguy.png");
+loadSprite("city","sprites/destroyed2.jpg");
+
+  scene("fight", () => {
+    const background = add([
+        sprite("city"),
+        scale(0.6),
+    ])
+
+setGravity(1400);
+
+const SPEED = 2000
+
+const player1 = add([
+	sprite("snake"),
+	pos(50,60),
+	area(),
+    scale(10),
+    body(),
+])
+
+const player2 = add([
+	sprite("snake"),
+	pos(700,60),
+	area(),
+    scale(10),
+    body(),
+])
+
+ // left invisible wall
+ add([
+    rect(16, 720),
+    area(),
+    body({isStatic: true}),
+    pos(-100,0)
+   ])
+
+   // right invisible wall
+   add([
+    rect(16, 720),
+    area(),
+    body({isStatic: true}),
+    pos(1250,0)
+   ])
+
+   function makePlayer(posX, posY, width, height, scaleFactor, id) {
+        return add([
+            pos(posX, posY),
+            scale(scaleFactor),
+            area({shape: new Rect(vec2(0), width, height)}),
+            anchor("center"),
+            body({stickToPlatform: true}),
+            {
+                isCurrentlyJumping: false,
+                health: 500,
+                sprites: {
+                    run: "run-" + id,
+                    idle: "idle-" + id,
+                    jump: "jump-" + id,
+                    attack: "attack-" + id,
+                    death: "death-" + id
+                }
+            }
+        ])
+    }
+
+
+
+
+
+
+
+
+add([
+  rect(width(), 48),
+  outline(4),
+  area(),
+  pos(0, height() - 15),
+  body({ isStatic: true }),
+  color(205,8,21),
+])
+
+onKeyPress("up", () => {
+  if (player1.isGrounded()) {
+    player1.jump()
+  }
+})
+
+onKeyDown("left", () => {
+  player1.move(-SPEED, 0)
+  })
+
+onKeyDown("right", () => {
+  player1.move(SPEED, 0)
+})
+
+
+
+onKeyPress("w", () => {
+  if (player2.isGrounded()) {
+    player2.jump()
+  }
+})
+
+onKeyDown("a", () => {
+  player2.move(-SPEED, 0)
+  })
+
+onKeyDown("d", () => {
+  player2.move(SPEED, 0)
+})
+
+const player1HealthContainer = add([
+        rect(500, 70),
+        area(),
+        outline(5),
+        pos(20, 20),
+        color(200,0,0)
+       ])
+
+    const player1HealthBar = player1HealthContainer.add([
+        rect(498, 65),
+        color(0,180,0),
+        pos(498, 70 - 2.5),
+        rotate(180)
+    ])
+
+    player1.onCollide(player2.id + "attackHitbox", () => {
+        if (gameOver) {
+            return
+        }
+
+        if (player1.health !== 0) {
+            player1.health -= 50
+            tween(player1HealthBar.width, player1.health, 1, (val) => {
+                player1HealthBar.width = val
+            }, easings.easeOutSine)
+        }
+
+        if (player1.health === 0) {
+            declareWinner(winningText, player1, player2)
+            gameOver = true
+        }
+    })
+
+    const player2HealthContainer = add([
+        rect(500, 70),
+        area(),
+        outline(5),
+        pos(640, 20),
+        color(200,0,0)
+    ])
+
+    const player2HealthBar = player2HealthContainer.add([
+        rect(498, 65),
+        color(0,180,0),
+        pos(2.5, 2.5),
+    ])
+
+    player2.onCollide(player1.id + "attackHitbox", () => {
+        if (gameOver) {
+            return
+        }
+
+        if (player2.health !== 0) {
+            player2.health -= 50
+            tween(player2HealthBar.width, player2.health, 1, (val) => {
+                player2HealthBar.width = val
+            }, easings.easeOutSine)
+        }
+
+        if (player2.health === 0) {
+            declareWinner(winningText, player1, player2)
+            gameOver = true
+        }
+    })
+})
+
+go("fight")
+
+</script>
