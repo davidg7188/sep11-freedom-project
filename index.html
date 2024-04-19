@@ -3,13 +3,28 @@
 import kaboom from "https://unpkg.com/kaboom@3000.0.1/dist/kaboom.mjs";
 
 kaboom({
-        width: window.innerWidth,
-        height: window.innerHeight,
+    width: 1380,
+    height: 620,
+    scale: 0.95,
+    debug: false,
+
 });
 
 loadSprite("kratos","sprites/kratos.png");
 loadSprite("snake","sprites/snakeguy.png");
 loadSprite("city","sprites/destroyed2.jpg");
+loadSprite("guy1-idle", "sprites/idle-player1.png", {
+    sliceX: 3, sliceY: 3, anims: { "idle": {from: 0, to: 5, speed: 12, loop: true}}
+})
+loadSprite("guy2-idle", "sprites/idle-player2.png", {
+    sliceX: 3, sliceY: 3, anims: { "idle": {from: 0, to: 5, speed: 12, loop: true}}
+})
+loadSprite("run-player2", "sprites/run-player2.png", {
+    sliceX: 3, sliceY: 3, anims: { "run": {from: 0, to: 7, speed: 12, loop: true}}
+})
+loadSprite("run-player1", "sprites/run-player1.png", {
+    sliceX: 3, sliceY: 3, anims: { "run": { from: 0, to: 7, speed: 18}}
+})
 
   scene("fight", () => {
     const background = add([
@@ -17,25 +32,53 @@ loadSprite("city","sprites/destroyed2.jpg");
         scale(0.6),
     ])
 
-setGravity(1400);
+setGravity(1800);
 
-const SPEED = 2000
+const JUMP_FORCE = 1000
+const SPEED = 2500
 
-const player1 = add([
-	sprite("snake"),
-	pos(50,60),
-	area(),
-    scale(10),
-    body(),
-])
+let isRunning = false;
+
+function startRunning() {
+    if (!isRunning) {
+        // Switch to the running sprite and play the "run" animation
+        player2.use("run-player2");
+        player2.play("run");
+        isRunning = true;
+    }
+}
+
+// Function to stop the running animation and switch back to idle
+function stopRunning() {
+    if (isRunning) {
+        // Stop the animation
+        player2.stop();
+        // Switch back to the idle sprite
+        player2.use("guy2-idle");
+        isRunning = false;
+    }
+}
 
 const player2 = add([
-	sprite("snake"),
-	pos(700,60),
+	sprite("guy2-idle"),
+    pos(700,60),
+	area(),
+    scale(10),
+    body(),
+    "player2"
+])
+
+const player1 = add([
+	sprite("guy1-idle"),
+    pos(50,60),
 	area(),
     scale(10),
     body(),
 ])
+
+player1.play("idle"),
+player2.play("idle"),
+
 
  // left invisible wall
  add([
@@ -90,34 +133,39 @@ add([
   color(205,8,21),
 ])
 
+
 onKeyPress("up", () => {
-  if (player1.isGrounded()) {
-    player1.jump()
+  if (player2.isGrounded()) {
+    player2.jump(JUMP_FORCE)
   }
 })
 
 onKeyDown("left", () => {
-  player1.move(-SPEED, 0)
+  player2.move(-SPEED, 0)
+  startRunning();
   })
 
 onKeyDown("right", () => {
-  player1.move(SPEED, 0)
+  player2.move(SPEED, 0)
+  startRunning();
 })
 
-
+// keyUp(["right", "left"], () => {
+//     stopRunning();
+// });
 
 onKeyPress("w", () => {
-  if (player2.isGrounded()) {
-    player2.jump()
+  if (player1.isGrounded()) {
+    player1.jump(JUMP_FORCE)
   }
 })
 
 onKeyDown("a", () => {
-  player2.move(-SPEED, 0)
+  player1.move(-SPEED, 0)
   })
 
 onKeyDown("d", () => {
-  player2.move(SPEED, 0)
+  player1.move(SPEED, 0)
 })
 
 const player1HealthContainer = add([
