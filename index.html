@@ -2,16 +2,16 @@
 
 import kaboom from "https://unpkg.com/kaboom@3000.0.1/dist/kaboom.mjs";
 
-kaboom({
-    width: 1380,
-    height: 620,
-    scale: 0.95,
-    debug: false,
+var w = window.innerWidth;
+var h = window.innerHeight;
 
+kaboom({
+    width: w,
+    height: h,
+    debug: false,
+    scale: 1,
 });
 
-loadSprite("kratos","sprites/kratos.png");
-loadSprite("snake","sprites/snakeguy.png");
 loadSprite("city","sprites/destroyed2.jpg");
 loadSprite("guy1-idle", "sprites/idle-player1.png", {
     sliceX: 3, sliceY: 3, anims: { "idle": {from: 0, to: 5, speed: 12, loop: true}}
@@ -19,45 +19,47 @@ loadSprite("guy1-idle", "sprites/idle-player1.png", {
 loadSprite("guy2-idle", "sprites/idle-player2.png", {
     sliceX: 3, sliceY: 3, anims: { "idle": {from: 0, to: 5, speed: 12, loop: true}}
 })
-loadSprite("run-player2", "sprites/run-player2.png", {
-    sliceX: 3, sliceY: 3, anims: { "run": {from: 0, to: 7, speed: 12, loop: true}}
-})
-loadSprite("run-player1", "sprites/run-player1.png", {
-    sliceX: 3, sliceY: 3, anims: { "run": { from: 0, to: 7, speed: 18}}
-})
+// loadSprite("run-player2", "sprites/run-player2.png", {
+//     sliceX: 3, sliceY: 3, anims: { "run": {from: 1, to: 7, speed: 12, loop: true}}
+// })
+// loadSprite("run-player1", "sprites/run-player1.png", {
+//     sliceX: 3, sliceY: 3, anims: { "run": { from: 0, to: 7, speed: 18}}
+// })
 
   scene("fight", () => {
     const background = add([
         sprite("city"),
-        scale(0.6),
+        scale(1.1),
+        width(window.innerWidth),
+        height(window.innerHeight),
     ])
 
-setGravity(1800);
+setGravity(2000);
 
-const JUMP_FORCE = 1000
+const JUMP_FORCE = 1300 // amount of jump strenghtrstrength
 const SPEED = 2500
 
 let isRunning = false;
 
-function startRunning() {
-    if (!isRunning) {
-        // Switch to the running sprite and play the "run" animation
-        player2.use("run-player2");
-        player2.play("run");
-        isRunning = true;
-    }
-}
+// function startRunning() {
+//     if (!isRunning) {
+//         // Switch to the running sprite and play the "run" animation
+//         player2.use("run-player2");
+//         player2.play("run");
+//         isRunning = true;
+//     }
+// }
 
-// Function to stop the running animation and switch back to idle
-function stopRunning() {
-    if (isRunning) {
-        // Stop the animation
-        player2.stop();
-        // Switch back to the idle sprite
-        player2.use("guy2-idle");
-        isRunning = false;
-    }
-}
+// // Function to stop the running animation and switch back to idle
+// function stopRunning() {
+//     if (isRunning) {
+//         // Stop the animation
+//         player2.stop();
+//         // Switch back to the idle sprite
+//         player2.use("guy2-idle");
+//         isRunning = false;
+//     }
+// }
 
 const player2 = add([
 	sprite("guy2-idle"),
@@ -65,7 +67,6 @@ const player2 = add([
 	area(),
     scale(10),
     body(),
-    "player2"
 ])
 
 const player1 = add([
@@ -90,40 +91,13 @@ player2.play("idle"),
 
    // right invisible wall
    add([
-    rect(16, 720),
+    rect(16, 1000),
     area(),
     body({isStatic: true}),
-    pos(1250,0)
+    pos(2000,0)
    ])
 
-   function makePlayer(posX, posY, width, height, scaleFactor, id) {
-        return add([
-            pos(posX, posY),
-            scale(scaleFactor),
-            area({shape: new Rect(vec2(0), width, height)}),
-            anchor("center"),
-            body({stickToPlatform: true}),
-            {
-                isCurrentlyJumping: false,
-                health: 500,
-                sprites: {
-                    run: "run-" + id,
-                    idle: "idle-" + id,
-                    jump: "jump-" + id,
-                    attack: "attack-" + id,
-                    death: "death-" + id
-                }
-            }
-        ])
-    }
-
-
-
-
-
-
-
-
+// code for floor
 add([
   rect(width(), 48),
   outline(4),
@@ -133,7 +107,7 @@ add([
   color(205,8,21),
 ])
 
-
+// code for player 2 movement
 onKeyPress("up", () => {
   if (player2.isGrounded()) {
     player2.jump(JUMP_FORCE)
@@ -142,18 +116,21 @@ onKeyPress("up", () => {
 
 onKeyDown("left", () => {
   player2.move(-SPEED, 0)
-  startRunning();
+  // startRunning();
+  player2.flipX = false // .flipX is for the sprite to switch sides depending on where it's looking
   })
 
 onKeyDown("right", () => {
   player2.move(SPEED, 0)
-  startRunning();
+  // startRunning();
+  player2.flipX = true
 })
 
 // keyUp(["right", "left"], () => {
 //     stopRunning();
 // });
 
+// code for player 1 movement
 onKeyPress("w", () => {
   if (player1.isGrounded()) {
     player1.jump(JUMP_FORCE)
@@ -162,17 +139,20 @@ onKeyPress("w", () => {
 
 onKeyDown("a", () => {
   player1.move(-SPEED, 0)
+  player1.flipX = true
   })
 
 onKeyDown("d", () => {
   player1.move(SPEED, 0)
+  player1.flipX = false
 })
 
+// code for healthbars
 const player1HealthContainer = add([
         rect(500, 70),
         area(),
         outline(5),
-        pos(20, 20),
+        pos(400, 20),
         color(200,0,0)
        ])
 
@@ -205,7 +185,7 @@ const player1HealthContainer = add([
         rect(500, 70),
         area(),
         outline(5),
-        pos(640, 20),
+        pos(1200, 20),
         color(200,0,0)
     ])
 
