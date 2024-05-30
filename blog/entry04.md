@@ -53,8 +53,7 @@ loadPedit("kratos", "sprites/kratos.pedit", {
 
 This was a real challenge, every time I ran the code an error would appear and I couldn´t figure out why. Making the animation run successfully is the main thing I want to fix in the next freedom project class. Moving forward I want to keep with the original plan of greating healthbars and simple attacks.
 
-I am in steps 5,6, and 7 of EDP(Engineering Design Process). I am still creating and testing, but I´m also improving on previous code, like finding a better way to create a floor. Two skills I used were debugging and creativity. The animation code required debugging and although I couldn´t completely fix it, I still tried and am close to solving the issue. And creativity was used in drawing the animation frames. 
-
+I am in steps 5,6, and 7 of EDP(Engineering Design Process). I am still creating and testing, but I´m also improving on previous code, like finding a better way to create a floor. Two skills I used were debugging and creativity. The animation code required debugging and although I couldn´t completely fix it, I still tried and am close to solving the issue. And creativity was used in drawing the animation frames.
 
 [Previous](entry03.md) | [Next](entry05.md)
 
